@@ -34,7 +34,6 @@
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
     "MAX_APPKEYS": "4",
-    "MAX_DEVKEYS": "1",
     "NET_CACHE_SIZE": "16",
     "RPL_SIZE": "32",
     "MAX_SEND_SEGS": "4",

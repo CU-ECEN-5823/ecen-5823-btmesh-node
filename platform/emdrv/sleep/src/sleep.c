@@ -6,12 +6,25 @@
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc.  Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement.  This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
 
@@ -248,30 +261,30 @@ void SLEEP_ForceSleepInEM4(void)
   enterEMx(sleepEM4);
 }
 
-/***************************************************************************//**
- * @brief
- *   Begin sleep block in the requested energy mode.
- *
- * @details
- *   Blocking a critical system state from a certain energy mode makes sure that
- *   the system is not set to that energy mode while the block is not being
- *   released.
- *   Every SLEEP_SleepBlockBegin() increases the corresponding counter and
- *   every SLEEP_SleepBlockEnd() decreases it.
- *
- *   Example:\code
- *      SLEEP_SleepBlockBegin(sleepEM2);  // do not allow EM2 or higher
- *      // do some stuff that requires EM1 at least, like ADC sampling
- *      SLEEP_SleepBlockEnd(sleepEM2);    // remove restriction for EM2\endcode
- *
- * @note
- *   Be aware that there is limit of maximum blocks nesting to 255.
- *
- * @param[in] eMode
- *   Energy mode to begin to block. Possible values:
- *   @li sleepEM2 - Begin to block the system from being set to EM2/EM3/EM4.
- *   @li sleepEM3 - Begin to block the system from being set to EM3/EM4.
- ******************************************************************************/
+/// ****************************************************************************
+/// @brief
+///   Begin sleep block in the requested energy mode.
+///
+/// @details
+///   Blocking a critical system state from a certain energy mode makes sure that
+///   the system is not set to that energy mode while the block is not being
+///   released.
+///   Every SLEEP_SleepBlockBegin() increases the corresponding counter and
+///   every SLEEP_SleepBlockEnd() decreases it.
+///
+///   Example:\code
+///      SLEEP_SleepBlockBegin(sleepEM2);  // do not allow EM2 or higher
+///      // do some stuff that requires EM1 at least, like ADC sampling
+///      SLEEP_SleepBlockEnd(sleepEM2);    // remove restriction for EM2\endcode
+///
+/// @note
+///   Be aware that there is limit of maximum blocks nesting to 255.
+///
+/// @param[in] eMode
+///   Energy mode to begin to block. Possible values:
+///   @li sleepEM2 - Begin to block the system from being set to EM2/EM3/EM4.
+///   @li sleepEM3 - Begin to block the system from being set to EM3/EM4.
+/// ****************************************************************************
 void SLEEP_SleepBlockBegin(SLEEP_EnergyMode_t eMode)
 {
   EFM_ASSERT((eMode >= sleepEM2) && (eMode < sleepEM4));
@@ -290,32 +303,32 @@ void SLEEP_SleepBlockBegin(SLEEP_EnergyMode_t eMode)
   }
 }
 
-/***************************************************************************//**
- * @brief
- *   End sleep block in the requested energy mode.
- *
- * @details
- *   Release restriction for entering certain energy mode. Every call of this
- *   function reduce blocking counter by 1. Once the counter for specific energy
- *   mode is 0 and all counters for lower energy modes are 0 as well, using
- *   particular energy mode is allowed.
- *   Every SLEEP_SleepBlockBegin() increases the corresponding counter and
- *   every SLEEP_SleepBlockEnd() decreases it.
- *
- *   Example:\code
- *      // at start all energy modes are allowed
- *      SLEEP_SleepBlockBegin(sleepEM3); // EM3 and EM4 are blocked
- *      SLEEP_SleepBlockBegin(sleepEM2); // EM2, EM3 and EM4 are blocked
- *      SLEEP_SleepBlockBegin(sleepEM2); // EM2, EM3 and EM4 are blocked
- *      SLEEP_SleepBlockEnd(sleepEM3);   // EM2, EM3 and EM4 are still blocked
- *      SLEEP_SleepBlockEnd(sleepEM2);   // EM2, EM3 and EM4 are still blocked
- *      SLEEP_SleepBlockEnd(sleepEM2);   // all energy modes are allowed now\endcode
- *
- * @param[in] eMode
- *   Energy mode to end to block. Possible values:
- *   @li sleepEM2 - End to block the system from being set to EM2/EM3/EM4.
- *   @li sleepEM3 - End to block the system from being set to EM3/EM4.
- ******************************************************************************/
+/// ****************************************************************************
+/// @brief
+///   End sleep block in the requested energy mode.
+///
+/// @details
+///   Release restriction for entering certain energy mode. Every call of this
+///   function reduce blocking counter by 1. Once the counter for specific energy
+///   mode is 0 and all counters for lower energy modes are 0 as well, using
+///   particular energy mode is allowed.
+///   Every SLEEP_SleepBlockBegin() increases the corresponding counter and
+///   every SLEEP_SleepBlockEnd() decreases it.
+///
+///   Example:\code
+///      // at start all energy modes are allowed
+///      SLEEP_SleepBlockBegin(sleepEM3); // EM3 and EM4 are blocked
+///      SLEEP_SleepBlockBegin(sleepEM2); // EM2, EM3 and EM4 are blocked
+///      SLEEP_SleepBlockBegin(sleepEM2); // EM2, EM3 and EM4 are blocked
+///      SLEEP_SleepBlockEnd(sleepEM3);   // EM2, EM3 and EM4 are still blocked
+///      SLEEP_SleepBlockEnd(sleepEM2);   // EM2, EM3 and EM4 are still blocked
+///      SLEEP_SleepBlockEnd(sleepEM2);   // all energy modes are allowed now\endcode
+///
+/// @param[in] eMode
+///   Energy mode to end to block. Possible values:
+///   @li sleepEM2 - End to block the system from being set to EM2/EM3/EM4.
+///   @li sleepEM3 - End to block the system from being set to EM3/EM4.
+/// ****************************************************************************
 void SLEEP_SleepBlockEnd(SLEEP_EnergyMode_t eMode)
 {
   EFM_ASSERT((eMode >= sleepEM2) && (eMode < sleepEM4));

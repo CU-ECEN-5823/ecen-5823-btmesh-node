@@ -2,7 +2,6 @@
  * @file
  * @brief CMSIS Compatible EFR32BG13P startup file in C.
  *        Should be used with GCC 'GNU Tools ARM Embedded'
- * @version 5.7.2
  *******************************************************************************
  * # License
  *
@@ -33,8 +32,8 @@
  * limitations under the License.
  */
 
-#include <stdint.h>
 #include <stdbool.h>
+#include "em_device.h"        /* The correct device header file. */
 
 /*----------------------------------------------------------------------------
  * Linker generated Symbols
@@ -49,14 +48,6 @@ extern uint32_t __zero_table_end__;
 extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
 extern uint32_t __StackTop;
-
-/*----------------------------------------------------------------------------
- * Exception / Interrupt Handler Function Prototype
- *----------------------------------------------------------------------------*/
-typedef union {
-  void (*pFunc)(void);
-  void *topOfStack;
-} tVectorEntry;
 
 /*----------------------------------------------------------------------------
  * External References
@@ -105,6 +96,9 @@ void DebugMon_Handler(void)          __attribute__ ((weak, alias("Default_Handle
 void SVC_Handler(void)               __attribute__ ((weak, alias("Default_Handler")));
 void PendSV_Handler(void)            __attribute__ ((weak, alias("Default_Handler")));
 void SysTick_Handler(void)           __attribute__ ((weak, alias("Default_Handler")));
+/* Provide a dummy value for the sl_app_properties symbol. */
+void sl_app_properties(void);     /* Prototype to please MISRA checkers. */
+void sl_app_properties(void)         __attribute__ ((weak, alias("Default_Handler")));
 
 /* Part Specific Interrupts */
 
@@ -174,7 +168,7 @@ const tVectorEntry        __Vectors[] __attribute__ ((section(".vectors"))) = {
   { Default_Handler           },              /* Reserved */
   { SVC_Handler               },              /* SVCall Handler */
   { DebugMon_Handler          },              /* Debug Monitor Handler */
-  { Default_Handler           },              /* Reserved */
+  { sl_app_properties         },              /* Application properties*/
   { PendSV_Handler            },              /* PendSV Handler */
   { SysTick_Handler           },              /* SysTick Handler */
 

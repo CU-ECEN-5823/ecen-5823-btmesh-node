@@ -64,6 +64,8 @@ typedef enum bg_error
 	bg_err_command_incomplete                                                             =bg_errspc_bg+149,            //Data received does not form a complete command
 	bg_err_not_initialized                                                                =bg_errspc_bg+150,            //Feature or subsystem not initialized
 	bg_err_invalid_sync_handle                                                            =bg_errspc_bg+151,            //Invalid periodic advertising sync handle
+	bg_err_invalid_module_action                                                          =bg_errspc_bg+152,            //Bluetooth cannot be used on this hardware
+	bg_err_radio                                                                          =bg_errspc_bg+153,            //Error received from radio
 	bg_err_smp_passkey_entry_failed                                                       =bg_errspc_smp+1,             //The user input of passkey failed, for example, the user cancelled the operation
 	bg_err_smp_oob_not_available                                                          =bg_errspc_smp+2,             //Out of Band data is not available for authentication
 	bg_err_smp_authentication_requirements                                                =bg_errspc_smp+3,             //The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices
@@ -159,7 +161,7 @@ typedef enum bg_error
 	bg_err_att_insufficient_resources                                                     =bg_errspc_att+17,            //Insufficient Resources to complete the request
 	bg_err_att_out_of_sync                                                                =bg_errspc_att+18,            //The server requests the client to rediscover the database.
 	bg_err_att_value_not_allowed                                                          =bg_errspc_att+19,            //The attribute parameter value was not allowed.
-	bg_err_att_application                                                                =bg_errspc_att+128,           //When this is returned in a BGAPI response, the application tried to read or write the value of a user attribute from the GATT database.
+	bg_err_att_application                                                                =bg_errspc_att+128,           //Start of ATT application error codes range defined by a higher layer specification.
 	bg_err_mesh_already_exists                                                            =bg_errspc_mesh+1,            //Returned when trying to add a key or some other unique resource with an ID which already exists
 	bg_err_mesh_does_not_exist                                                            =bg_errspc_mesh+2,            //Returned when trying to manipulate a key or some other resource with an ID which does not exist
 	bg_err_mesh_limit_reached                                                             =bg_errspc_mesh+3,            //Returned when an operation cannot be executed because a pre-configured limit for keys, key bindings, elements, models, virtual addresses, provisioned devices, or provisioning sessions is reached
@@ -173,12 +175,13 @@ typedef enum bg_error
 	bg_err_mesh_prov_invalid_pdu_format                                                   =bg_errspc_mesh+11,           //A provisioning PDU with wrong length or containing field values that are out of bounds was received.
 	bg_err_mesh_prov_unexpected_pdu                                                       =bg_errspc_mesh+12,           //An unexpected (out of sequence) provisioning PDU was received.
 	bg_err_mesh_prov_confirmation_failed                                                  =bg_errspc_mesh+13,           //The computed confirmation value did not match the expected value.
-	bg_err_mesh_prov_out_of_resources                                                     =bg_errspc_mesh+14,           //Provisioning could not be continued due to unsufficient resources.
+	bg_err_mesh_prov_out_of_resources                                                     =bg_errspc_mesh+14,           //Provisioning could not be continued due to insufficient resources.
 	bg_err_mesh_prov_decryption_failed                                                    =bg_errspc_mesh+15,           //The provisioning data block could not be decrypted.
 	bg_err_mesh_prov_unexpected_error                                                     =bg_errspc_mesh+16,           //An unexpected error happened during provisioning.
 	bg_err_mesh_prov_cannot_assign_addr                                                   =bg_errspc_mesh+17,           //Device could not assign unicast addresses to all of its elements.
 	bg_err_mesh_address_temporarily_unavailable                                           =bg_errspc_mesh+18,           //Returned when trying to reuse an address of a previously deleted device before an IV Index Update has been executed.
 	bg_err_mesh_address_already_used                                                      =bg_errspc_mesh+19,           //Returned when trying to assign an address that is used by one of the devices in the Device Database, or by the Provisioner itself.
+	bg_err_mesh_no_data_available                                                         =bg_errspc_mesh+20,           //Returned when no data is available for reading.
 	bg_err_mesh_foundation_invalid_address                                                =bg_errspc_mesh_foundation+1, //Returned when address in request was not valid
 	bg_err_mesh_foundation_invalid_model                                                  =bg_errspc_mesh_foundation+2, //Returned when model identified is not found for a given element
 	bg_err_mesh_foundation_invalid_app_key                                                =bg_errspc_mesh_foundation+3, //Returned when the key identified by AppKeyIndex is not stored in the node

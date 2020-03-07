@@ -74,11 +74,6 @@ SECTIONS
     __Vectors_End = .;
     __Vectors_Size = __Vectors_End - __Vectors;
     __end__ = .;
-    KEEP(*(.application_properties))
-	KEEP(*(.gecko_configuration))
-	KEEP(*(.xo_configuration))  
-	KEEP(*(.gatt_header))
-	KEEP(*(.gatt_data))			
     *(.text*)
 
     KEEP(*(.init))
@@ -166,7 +161,7 @@ SECTIONS
 
   } > RAM
   
-  .bss :
+  .bss . :
   {
     . = ALIGN(4);
     __bss_start__ = .;

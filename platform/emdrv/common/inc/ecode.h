@@ -6,12 +6,25 @@
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc.  Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement.  This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
 #ifndef __SILICON_LABS_ECODE_H__
@@ -58,15 +71,15 @@ typedef uint32_t Ecode_t;
 
 #define ECODE_OK          (0U)            ///< Generic success return value.
 
-#define ECODE_EMDRV_RTCDRV_BASE     (ECODE_EMDRV_BASE | 0x00001000U)   ///< Base value for RTCDRV error codes.
-#define ECODE_EMDRV_SPIDRV_BASE     (ECODE_EMDRV_BASE | 0x00002000U)   ///< Base value for SPIDRV error codes.
-#define ECODE_EMDRV_NVM_BASE        (ECODE_EMDRV_BASE | 0x00003000U)   ///< Base value for NVM error codes.
-#define ECODE_EMDRV_USTIMER_BASE    (ECODE_EMDRV_BASE | 0x00004000U)   ///< Base value for USTIMER error codes.
-#define ECODE_EMDRV_UARTDRV_BASE    (ECODE_EMDRV_BASE | 0x00007000U)   ///< Base value for UARTDRV error codes.
-#define ECODE_EMDRV_DMADRV_BASE     (ECODE_EMDRV_BASE | 0x00008000U)   ///< Base value for DMADRV error codes.
-#define ECODE_EMDRV_EZRADIODRV_BASE (ECODE_EMDRV_BASE | 0x00009000U)   ///< Base value for EZRADIODRV error codes.
-#define ECODE_EMDRV_TEMPDRV_BASE    (ECODE_EMDRV_BASE | 0x0000D000U)   ///< Base value for TEMPDRV error codes.
-#define ECODE_EMDRV_NVM3_BASE       (ECODE_EMDRV_BASE | 0x0000E000U)   ///< Base value for NVM3 error codes.
+#define ECODE_EMDRV_RTCDRV_BASE      (ECODE_EMDRV_BASE | 0x00001000U)   ///< Base value for RTCDRV error codes.
+#define ECODE_EMDRV_SPIDRV_BASE      (ECODE_EMDRV_BASE | 0x00002000U)   ///< Base value for SPIDRV error codes.
+#define ECODE_EMDRV_NVM_BASE         (ECODE_EMDRV_BASE | 0x00003000U)   ///< Base value for NVM error codes.
+#define ECODE_EMDRV_USTIMER_BASE     (ECODE_EMDRV_BASE | 0x00004000U)   ///< Base value for USTIMER error codes.
+#define ECODE_EMDRV_UARTDRV_BASE     (ECODE_EMDRV_BASE | 0x00007000U)   ///< Base value for UARTDRV error codes.
+#define ECODE_EMDRV_DMADRV_BASE      (ECODE_EMDRV_BASE | 0x00008000U)   ///< Base value for DMADRV error codes.
+#define ECODE_EMDRV_EZRADIODRV_BASE  (ECODE_EMDRV_BASE | 0x00009000U)   ///< Base value for EZRADIODRV error codes.
+#define ECODE_EMDRV_TEMPDRV_BASE     (ECODE_EMDRV_BASE | 0x0000D000U)   ///< Base value for TEMPDRV error codes.
+#define ECODE_EMDRV_NVM3_BASE        (ECODE_EMDRV_BASE | 0x0000E000U)   ///< Base value for NVM3 error codes.
 
 /** @} (end addtogroup emdrv) */
 

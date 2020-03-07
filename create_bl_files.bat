@@ -5,7 +5,7 @@
 
 :: use PATH_GCCARM env var to override default path for gcc-arm
 if "%PATH_GCCARM%"=="" (
-  set OBJCOPY="C:\SiliconLabs\SimplicityStudio\v4\developer\toolchains\gnu_arm\4.9_2015q3\bin\arm-none-eabi-objcopy.exe"
+  set OBJCOPY="C:\SiliconLabs\SimplicityStudio\v4\developer\toolchains\gnu_arm\7.2_2017q4\bin\arm-none-eabi-objcopy.exe"
 ) else (
   set OBJCOPY=%PATH_GCCARM%\bin\arm-none-eabi-objcopy.exe
 )
@@ -38,7 +38,7 @@ set GBL_ENCRYPT_KEY_FILE=app-encrypt-key.txt
 :: change the working dir to the dir of the batch file, which should be in the project root
 cd %~dp0
 
-for /f "delims=" %%i in ('dir *.axf *.out /b/s') do set PATH_OUT=%%i
+for /f "delims=" %%i in ('dir *.axf *.out /b/s/od') do set PATH_OUT=%%i
 if "%PATH_OUT%"=="" (
   echo "Error: neither %FILE_EXTENSION_GCC% nor %FILE_EXTENSION_IAR% found"
   echo Was the project compiled and linked successfully?

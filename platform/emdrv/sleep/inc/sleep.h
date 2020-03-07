@@ -6,12 +6,25 @@
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc.  Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement.  This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
 #ifndef SLEEP_H
@@ -31,87 +44,85 @@ extern "C" {
  * @addtogroup emdrv
  * @{
  ******************************************************************************/
-
-/***************************************************************************//**
- * @addtogroup SLEEP
- * @brief
- *   Sleep Management Driver.
- *
- * @details
- *
- *   @n @section sleepdrv_intro Introduction
- *   This is a sleep management module consisting of sleep.c and sleep.h
- *   source files. The main purpose of the module is to make it easy for an
- *   application to always enter the lowest possible energy mode using a simple
- *   API.
- *
- *   The module works by providing an API for defining "sleep blocks" in the
- *   application code. A "sleep block" will block the MCU from entering a certain
- *   energy mode. A "sleep block" can for instance block EM2 entry because an
- *   EM1 only peripheral is in use. These "sleep blocks" are created by the calls to
- *   @ref SLEEP_SleepBlockBegin() and end with @ref SLEEP_SleepBlockEnd().
- *
- *   When an application wants to enter a low energy mode it can call
- *   @ref SLEEP_Sleep() to enter the lowest possible energy mode. This module
- *   will use the "sleep blocks" to figure out the lowest possible energy mode.
- *
- *   Here is an example of how the sleep driver is initialized and how it can
- *   be used to enter EM2.
- *
- * @code
- *   SLEEP_Init_t sleepConfig = {0};
- *   SLEEP_InitEx(&sleepConfig);
- *   SLEEP_SleepBlockBegin(sleepEM3); // Block EM3 entry
- *   SLEEP_Sleep();
- *   SLEEP_SleepBlockEnd(sleepEM3);
- * @endcode
- *
- *   @n @section sleepdrv_callbacks Sleep and Wakeup Events/Callbacks
- *
- *   This module also provides a way to add application callbacks to notify
- *   the application that the MCU is entering sleep, or waking up from sleep.
- *   These callbacks can be provided to the driver when calling
- *   @ref SLEEP_InitEx().
- *
- *   The sleepCallback function is called before entering sleep and the
- *   wakeupCallback is called after waking up from sleep. The sleepCallback
- *   function has a bool return value. This return value can be used to control
- *   if the MCU should really go to sleep or not. Returning true will make
- *   the MCU enter the selected energy mode, while returning false will force
- *   the sleep driver to return without entering a sleep.
- *
- *   Here is an example of how the sleep and wakeup callbacks are used.
- *
- *   @code
- *   static bool beforeSleep(SLEEP_EnergyMode_t mode)
- *   {
- *     printf("sleep\n");
- *     return true;
- *   }
- *
- *   static void afterWakeup(SLEEP_EnergyMode_t mode)
- *   {
- *     printf("wakeup\n");
- *     (void) mode;
- *   }
- *
- *   void main(void)
- *   {
- *     SLEEP_Init_t sleepConfig = {
- *       .sleepCallback = beforeSleep,
- *       .wakeupCallback = afterWakeup
- *     };
- *     SLEEP_InitEx(&sleepConfig);
- *     SLEEP_SleepBlockBegin(sleepEM3); // Block EM3 entry
- *     while (true) {
- *       SLEEP_Sleep();
- *     }
- *     SLEEP_SleepBlockEnd(sleepEM3);
- *   }
- *   @endcode
- *
- * @{
- ******************************************************************************/
+/// @addtogroup SLEEP
+/// @brief
+///   Sleep Management Driver.
+///
+/// @details
+///
+///   @n @section sleepdrv_intro Introduction
+///   This is a sleep management module consisting of sleep.c and sleep.h
+///   source files. The main purpose of the module is to make it easy for an
+///   application to always enter the lowest possible energy mode using a simple
+///   API.
+///
+///   The module works by providing an API for defining "sleep blocks" in the
+///   application code. A "sleep block" will block the MCU from entering a certain
+///   energy mode. A "sleep block" can for instance block EM2 entry because an
+///   EM1 only peripheral is in use. These "sleep blocks" are created by the calls to
+///   @ref SLEEP_SleepBlockBegin() and end with @ref SLEEP_SleepBlockEnd().
+///
+///   When an application wants to enter a low energy mode it can call
+///   @ref SLEEP_Sleep() to enter the lowest possible energy mode. This module
+///   will use the "sleep blocks" to figure out the lowest possible energy mode.
+///
+///   Here is an example of how the sleep driver is initialized and how it can
+///   be used to enter EM2.
+///
+/// @code
+///   SLEEP_Init_t sleepConfig = {0};
+///   SLEEP_InitEx(&sleepConfig);
+///   SLEEP_SleepBlockBegin(sleepEM3); // Block EM3 entry
+///   SLEEP_Sleep();
+///   SLEEP_SleepBlockEnd(sleepEM3);
+/// @endcode
+///
+///   @n @section sleepdrv_callbacks Sleep and Wakeup Events/Callbacks
+///
+///   This module also provides a way to add application callbacks to notify
+///   the application that the MCU is entering sleep, or waking up from sleep.
+///   These callbacks can be provided to the driver when calling
+///   @ref SLEEP_InitEx().
+///
+///   The sleepCallback function is called before entering sleep and the
+///   wakeupCallback is called after waking up from sleep. The sleepCallback
+///   function has a bool return value. This return value can be used to control
+///   if the MCU should really go to sleep or not. Returning true will make
+///   the MCU enter the selected energy mode, while returning false will force
+///   the sleep driver to return without entering a sleep.
+///
+///   Here is an example of how the sleep and wakeup callbacks are used.
+///
+///   @code
+///   static bool beforeSleep(SLEEP_EnergyMode_t mode)
+///   {
+///     printf("sleep\n");
+///     return true;
+///   }
+///
+///   static void afterWakeup(SLEEP_EnergyMode_t mode)
+///   {
+///     printf("wakeup\n");
+///     (void) mode;
+///   }
+///
+///   void main(void)
+///   {
+///     SLEEP_Init_t sleepConfig = {
+///       .sleepCallback = beforeSleep,
+///       .wakeupCallback = afterWakeup
+///     };
+///     SLEEP_InitEx(&sleepConfig);
+///     SLEEP_SleepBlockBegin(sleepEM3); // Block EM3 entry
+///     while (true) {
+///       SLEEP_Sleep();
+///     }
+///     SLEEP_SleepBlockEnd(sleepEM3);
+///   }
+///   @endcode
+///
+/// @{
+///*****************************************************************************
 
 /*******************************************************************************
  *******************************   MACROS   ************************************

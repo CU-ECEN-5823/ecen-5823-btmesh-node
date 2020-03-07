@@ -22,7 +22,8 @@
 *.lib
 *.a
 # Silicon labs requires the set of closed source libraries here to be checked in, not part of the build output
-!protocol/bluetooth/lib/*/GCC/*.a
+!protocol/**/*.a
+!platform/**/*.a
 *.la
 *.lo
 
@@ -60,3 +61,4 @@ GNU\ ARM*
 
 # Project import result
 imported_project_report.html
+BgBuild_Log.txt

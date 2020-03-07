@@ -1,7 +1,6 @@
 /***************************************************************************//**
  * @file
  * @brief Secure Element API
- * @version 5.7.2
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
@@ -33,7 +32,7 @@
 
 #include "em_device.h"
 
-#if defined(SEMAILBOX_PRESENT)
+#if defined(SEMAILBOX_PRESENT) || defined(CRYPTOACC_PRESENT)
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -74,22 +73,24 @@ extern "C" {
  ******************************   DEFINES    ***********************************
  ******************************************************************************/
 
-/* Command words for the Secure Element. */
+#if defined(SEMAILBOX_PRESENT)
+
+/* Command words for the Security Engine. */
 #if (defined(_SILICON_LABS_SECURITY_FEATURE) \
-  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_ADVANCED))
+  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_VAULT))
 #define SE_COMMAND_WRAP_KEY                 0x01000000UL
 #define SE_COMMAND_UNWRAP_KEY               0x01020000UL
 #define SE_COMMAND_TRANSFER_KEY             0x01060000UL
-#endif /* _SILICON_LABS_SECURITY_FEATURE_ADVANCED */
+#endif /* _SILICON_LABS_SECURITY_FEATURE_VAULT */
 
 #define SE_COMMAND_CREATE_KEY               0x02000000UL
 #define SE_COMMAND_READPUB_KEY              0x02010000UL
 
 #if (defined(_SILICON_LABS_SECURITY_FEATURE) \
-  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_ADVANCED))
+  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_VAULT))
 #define SE_COMMAND_DERIVE_KEY_PBKDF2        0x02020002UL
 #define SE_COMMAND_DERIVE_KEY_HKDF          0x02020003UL
-#endif /* _SILICON_LABS_SECURITY_FEATURE_ADVANCED */
+#endif /* _SILICON_LABS_SECURITY_FEATURE_VAULT */
 
 #define SE_COMMAND_HASH                     0x03000000UL
 #define SE_COMMAND_HASHUPDATE               0x03010000UL
@@ -106,20 +107,20 @@ extern "C" {
 #define SE_COMMAND_SIGNATURE_SIGN           0x06000000UL
 #define SE_COMMAND_SIGNATURE_VERIFY         0x06010000UL
 #if (defined(_SILICON_LABS_SECURITY_FEATURE) \
-  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_ADVANCED))
+  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_VAULT))
 #define SE_COMMAND_EDDSA_SIGN               0x06020000UL
 #define SE_COMMAND_EDDSA_VERIFY             0x06030000UL
-#endif /* _SILICON_LABS_SECURITY_FEATURE_ADVANCED */
+#endif /* _SILICON_LABS_SECURITY_FEATURE_VAULT */
 
 #define SE_COMMAND_TRNG_GET_RANDOM          0x07000000UL
 #define SE_COMMAND_READ_CLOCK               0x07020000UL
 
 #if (defined(_SILICON_LABS_SECURITY_FEATURE) \
-  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_ADVANCED))
+  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_VAULT))
 #define SE_COMMAND_ATTEST_CERTIFY           0x0A000000UL
 #define SE_COMMAND_ATTEST_TIME              0x0A010000UL
 #define SE_COMMAND_ATTEST_PUBKEY            0x0A020000UL
-#endif /* _SILICON_LABS_SECURITY_FEATURE_ADVANCED */
+#endif /* _SILICON_LABS_SECURITY_FEATURE_VAULT */
 
 #define SE_COMMAND_JPAKE_R1_GENERATE        0x0B000000UL
 #define SE_COMMAND_JPAKE_R1_VERIFY          0x0B000100UL
@@ -128,22 +129,27 @@ extern "C" {
 #define SE_COMMAND_JPAKE_GEN_SESSIONKEY     0x0B020000UL
 
 #if (defined(_SILICON_LABS_SECURITY_FEATURE) \
-  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_ADVANCED))
+  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_VAULT))
 #define SE_COMMAND_AEAD_ENCRYPT             0x0C000000UL
 #define SE_COMMAND_AEAD_DECRYPT             0x0C010000UL
 #define SE_COMMAND_CHACHA20_ENCRYPT         0x0C020000UL
 #define SE_COMMAND_CHACHA20_DECRYPT         0x0C030000UL
 #define SE_COMMAND_POLY1305_KEY_MAC         0x0C040000UL
-#endif /* _SILICON_LABS_SECURITY_FEATURE_ADVANCED */
+#endif /* _SILICON_LABS_SECURITY_FEATURE_VAULT */
 
 #define SE_COMMAND_DH                       0x0E000000UL
+
+#endif // #if defined(SEMAILBOX_PRESENT)
 
 #define SE_COMMAND_CHECK_SE_IMAGE           0x43020000UL
 #define SE_COMMAND_APPLY_SE_IMAGE           0x43030000UL
 #define SE_COMMAND_STATUS_SE_IMAGE          0x43040000UL
 #define SE_COMMAND_CHECK_HOST_IMAGE         0x43050001UL
 #define SE_COMMAND_APPLY_HOST_IMAGE         0x43060001UL
-#define SE_COMMAND_STATUS_HOST_IMAGE        0x43070001UL
+#define SE_COMMAND_STATUS_HOST_IMAGE        0x43070000UL
+
+#if defined(SEMAILBOX_PRESENT)
+
 #define SE_COMMAND_STATUS_SE_VERSION        0x43080000UL
 #define SE_COMMAND_STATUS_OTP_VERSION       0x43080100UL
 
@@ -157,7 +163,10 @@ extern "C" {
 #define SE_COMMAND_DEVICE_ERASE_DISABLE     0x43100000
 #define SE_COMMAND_DBG_LOCK_STATUS          0x43110000
 
+#define SE_COMMAND_PROTECTED_REGISTER       0x43210000
+
 #define SE_COMMAND_GET_CHALLENGE            0xFD000000UL
+#define SE_COMMAND_ROLL_CHALLENGE           0xFD000100UL
 #define SE_COMMAND_OPEN_DEBUG               0xFD010001UL
 #define SE_COMMAND_DISABLE_TAMPER           0xFD020001UL
 
@@ -185,12 +194,12 @@ extern "C" {
 #define SE_COMMAND_OPTION_HASH_SHA256       0x00000400UL
 
 #if (defined(_SILICON_LABS_SECURITY_FEATURE) \
-  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_ADVANCED))
+  && (_SILICON_LABS_SECURITY_FEATURE == _SILICON_LABS_SECURITY_FEATURE_VAULT))
 /** Use SHA384 as hash algorithm */
 #define SE_COMMAND_OPTION_HASH_SHA384       0x00000500UL
 /** Use SHA512 as hash algorithm */
 #define SE_COMMAND_OPTION_HASH_SHA512       0x00000600UL
-#endif /* _SILICON_LABS_SECURITY_FEATURE_ADVANCED */
+#endif /* _SILICON_LABS_SECURITY_FEATURE_VAULT */
 
 /** Execute algorithm in ECB mode */
 #define SE_COMMAND_OPTION_MODE_ECB          0x00000100UL
@@ -230,8 +239,13 @@ extern "C" {
 #define SE_COMMAND_OPTION_PADDING_PSS       0x00000004UL
 
 /* Special parameters for the Secure Element commands. */
+#define SE_COMMAND_OPTION_READ              0x00000000UL
+#define SE_COMMAND_OPTION_WRITE             0x00000100UL
+
 /** Magic paramater for deleting user data */
 #define SE_COMMAND_OPTION_ERASE_UD          0xDE1E7EADUL
+
+#endif // #if defined(SEMAILBOX_PRESENT)
 
 /* Response status codes for the Secure Element */
 #define SE_RESPONSE_MASK                    0x000F0000UL
@@ -262,6 +276,12 @@ extern "C" {
 #define SE_RESPONSE_INVALID_PARAMETER       0x00070000UL
 /* Abort status code is given when no operation is attempted. */
 #define SE_RESPONSE_ABORT                   0x00090000UL
+#if defined(CRYPTOACC_PRESENT) && !defined(SEMAILBOX_PRESENT)
+/* Root Code Mailbox is invalid. */
+#define SE_RESPONSE_MAILBOX_INVALID         0x000A0000UL
+/* Root Code Mailbox magic word */
+#define SE_RESPONSE_MAILBOX_VALID           0xE5ECC0DEUL
+#endif
 
 #define SE_DATATRANSFER_STOP                0x00000001UL
 #define SE_DATATRANSFER_DISCARD             0x40000000UL
@@ -299,7 +319,7 @@ typedef struct {
 /** Default initialization of data transfer struct */
 #define SE_DATATRANSFER_DEFAULT(address, length)                               \
   {                                                                            \
-    (address),                         /* Pointer to data block */             \
+    (void*)(address),                  /* Pointer to data block */             \
     (void*)SE_DATATRANSFER_STOP,       /* This is the last block by default */ \
     (length) | SE_DATATRANSFER_REALIGN /* Add size, use realign by default */  \
   }
@@ -331,10 +351,19 @@ typedef uint32_t SE_Response_t;
 typedef struct {
   /** Enable secure boot for the host. */
   bool enableSecureBoot;
-  /** Enable verification of the secure boot certificate. */
+  /** Require certificate based secure boot signing. */
   bool verifySecureBootCertificate;
-  /** Enable anti-rollback for the host application. */
+  /** Enable anti-rollback for host application upgrades. */
   bool enableAntiRollback;
+
+  /** Set flag to enable locking down all flash pages that cover the
+   * secure-booted image, except the last page if end of signature is not
+   * page-aligned. */
+  bool secureBootPageLockNarrow;
+  /** Set flag to enable locking down all flash pages that cover the
+   * secure-booted image, including the last page if end of signature is not
+   * page-aligned. */
+  bool secureBootPageLockFull;
 } SE_OTPInit_t;
 
 typedef struct {
@@ -373,6 +402,8 @@ void SE_addParameter(SE_Command_t *command, uint32_t parameter);
 
 void SE_executeCommand(SE_Command_t *command);
 
+#if defined(SEMAILBOX_PRESENT)
+
 // User data commands
 SE_Response_t SE_writeUserData(uint32_t offset,
                                void *data,
@@ -381,29 +412,51 @@ SE_Response_t SE_writeUserData(uint32_t offset,
 SE_Response_t SE_eraseUserData(void);
 
 // Initialization commands
-SE_Response_t SE_readPubkey(uint32_t key_type, void *pubkey, uint32_t numBytes, bool signature);
-SE_Response_t SE_initPubkey(uint32_t key_type, void *pubkey, uint32_t numBytes, bool signature);
+SE_Response_t SE_readPubkey(uint32_t key_type,
+                            void* pubkey,
+                            uint32_t numBytes,
+                            bool signature);
+SE_Response_t SE_initPubkey(uint32_t key_type,
+                            void* pubkey,
+                            uint32_t numBytes,
+                            bool signature);
 SE_Response_t SE_initOTP(SE_OTPInit_t *otp_init);
 
 // Debug commands
 SE_Response_t SE_debugLockStatus(SE_DebugStatus_t *status);
-SE_Response_t SE_debugLockApply();
-SE_Response_t SE_debugSecureEnable();
-SE_Response_t SE_debugSecureDisable();
-SE_Response_t SE_deviceEraseDisable();
-SE_Response_t SE_deviceErase();
+SE_Response_t SE_debugLockApply(void);
+SE_Response_t SE_debugSecureEnable(void);
+SE_Response_t SE_debugSecureDisable(void);
+SE_Response_t SE_deviceEraseDisable(void);
+SE_Response_t SE_deviceErase(void);
 
 // Device status commands
 SE_Response_t SE_getStatus(SE_Status_t *output);
 SE_Response_t SE_serialNumber(void *serial);
 
+#else
+
+SE_Response_t SE_getVersion(uint32_t *version);
+SE_Response_t SE_getConfigStatusBits(uint32_t *cfgStatus);
+SE_Response_t SE_ackCommand(SE_Command_t *command);
+
+#endif // #if defined(SEMAILBOX_PRESENT)
+
 // Utilities
+#if defined(SEMAILBOX_PRESENT)
 __STATIC_INLINE bool SE_isCommandCompleted(void);
-__STATIC_INLINE void SE_waitCommandCompletion(void);
 __STATIC_INLINE SE_Response_t SE_readCommandResponse(void);
+#elif defined(CRYPTOACC_PRESENT)
+bool SE_isCommandCompleted(void);
+uint32_t SE_readExecutedCommand(void);
+SE_Response_t SE_readCommandResponse(void);
+#endif // #if defined(SEMAILBOX_PRESENT)
+
+__STATIC_INLINE void SE_waitCommandCompletion(void);
 __STATIC_INLINE void SE_disableInterrupt(uint32_t flags);
 __STATIC_INLINE void SE_enableInterrupt(uint32_t flags);
 
+#if defined(SEMAILBOX_PRESENT)
 /***************************************************************************//**
  * @brief
  *   Check whether the running command has completed.
@@ -417,6 +470,7 @@ __STATIC_INLINE bool SE_isCommandCompleted(void)
 {
   return (bool)(SEMAILBOX_HOST->RX_STATUS & SEMAILBOX_RX_STATUS_RXINT);
 }
+#endif
 
 /***************************************************************************//**
  * @brief
@@ -433,6 +487,7 @@ __STATIC_INLINE void SE_waitCommandCompletion(void)
   }
 }
 
+#if defined(SEMAILBOX_PRESENT)
 /***************************************************************************//**
  * @brief
  *   Read the status of the previously executed command.
@@ -461,6 +516,7 @@ __STATIC_INLINE SE_Response_t SE_readCommandResponse(void)
   SE_waitCommandCompletion();
   return (SE_Response_t)(SEMAILBOX_HOST->RX_HEADER & SE_RESPONSE_MASK);
 }
+#endif // #if defined(SEMAILBOX_PRESENT)
 
 /***************************************************************************//**
  * @brief
@@ -473,7 +529,11 @@ __STATIC_INLINE SE_Response_t SE_readCommandResponse(void)
  ******************************************************************************/
 __STATIC_INLINE void SE_disableInterrupt(uint32_t flags)
 {
+#if defined(SEMAILBOX_PRESENT)
   SEMAILBOX_HOST->CONFIGURATION &= ~flags;
+#else
+  (void) flags;
+#endif
 }
 
 /***************************************************************************//**
@@ -487,7 +547,11 @@ __STATIC_INLINE void SE_disableInterrupt(uint32_t flags)
  ******************************************************************************/
 __STATIC_INLINE void SE_enableInterrupt(uint32_t flags)
 {
+#if defined(SEMAILBOX_PRESENT)
   SEMAILBOX_HOST->CONFIGURATION |= flags;
+#else
+  (void) flags;
+#endif
 }
 
 #ifdef __cplusplus
@@ -497,6 +561,7 @@ __STATIC_INLINE void SE_enableInterrupt(uint32_t flags)
 /** @} (end addtogroup SE) */
 /** @} (end addtogroup emlib) */
 
-#endif /* defined(SEMAILBOX_PRESENT) */
+#endif /* defined(SEMAILBOX_PRESENT)
+       || defined(_SILICON_LABS_32B_SERIES_2_CONFIG_2) */
 
 #endif /* EM_SE_H */

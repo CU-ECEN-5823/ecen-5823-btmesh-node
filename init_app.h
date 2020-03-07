@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 void initApp(void);
+void initVcomEnable(void);
 
 #ifdef __cplusplus
 }
